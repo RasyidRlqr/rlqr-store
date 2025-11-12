@@ -13,8 +13,8 @@
                 </li>
                 
                 @auth
-                    {{-- LINK DASHBOARD USER (Hanya Tampil Jika Bukan Admin) --}}
-                    @if (Auth::user()->role === 0)
+                    {{-- LINK DASHBOARD USER (Hanya Tampil Jika Bukan Admin dan Tidak di Admin Panel) --}}
+                    @if (Auth::user()->role === 0 && !request()->is('admin/*'))
                         <li class="nav-item">
                             <a class="nav-link fw-bold" href="{{ route('dashboard') }}">
                                 Dashboard User
@@ -22,16 +22,25 @@
                         </li>
                     @endif
 
-                    {{-- LINK ADMIN (Hanya Tampil Jika Role = 1) --}}
-                    @if (Auth::user()->role === 1)
+                    {{-- LINK ADMIN (Hanya Tampil Jika Role = 1 dan Tidak di Admin Panel) --}}
+                    @if (Auth::user()->role === 1 && !request()->is('admin/*'))
                         <li class="nav-item">
                             <a class="nav-link fw-bold text-warning" href="{{ route('admin.dashboard') }}">
                                 Panel Admin
                             </a>
                         </li>
-                        {{-- Tambahkan link cepat admin lainnya di sini --}}
+                    @endif
+
+                    {{-- LINK CEPAT ADMIN (Hanya Tampil Jika Role = 1 dan di Admin Panel) --}}
+                    @if (Auth::user()->role === 1 && request()->is('admin/*'))
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('games.index') }}">Kelola Game</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('products.index') }}">Kelola Produk</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('orders.index') }}">Kelola Pesanan</a>
                         </li>
                     @endif
                 @endauth
