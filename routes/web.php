@@ -14,7 +14,14 @@ use App\Models\Game;
 
 // Homepage / Landing Page
 Route::get('/', function () {
-    $games = Game::where('is_active', true)->orderBy('name')->get(); 
+    // Mock data for demonstration - replace with database query when MySQL is available
+    $games = collect([
+        (object)['id' => 1, 'name' => 'Mobile Legends', 'slug' => 'mobile-legends', 'is_active' => true],
+        (object)['id' => 2, 'name' => 'Free Fire', 'slug' => 'free-fire', 'is_active' => true],
+        (object)['id' => 3, 'name' => 'PUBG Mobile', 'slug' => 'pubg-mobile', 'is_active' => true],
+        (object)['id' => 4, 'name' => 'Genshin Impact', 'slug' => 'genshin-impact', 'is_active' => true],
+        (object)['id' => 5, 'name' => 'Valorant', 'slug' => 'valorant', 'is_active' => true],
+    ]);
     return view('index', compact('games'));
 })->name('homepage');
 

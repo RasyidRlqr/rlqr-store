@@ -273,5 +273,108 @@
         @if (Route::has('login'))
             <div class="h-14.5 hidden lg:block"></div>
         @endif
+
+        <!-- Floating Assistant Bot -->
+        <div id="assistant-bot" class="fixed bottom-4 right-4 z-50">
+            <button id="bot-toggle" class="bg-blue-500 hover:bg-blue-600 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg transition-all duration-300">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                </svg>
+            </button>
+            <div id="chat-window" class="hidden absolute bottom-14 right-0 w-80 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700">
+                <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Assistant Bot</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">How can I help you today?</p>
+                </div>
+                <div id="chat-messages" class="p-4 h-64 overflow-y-auto space-y-3">
+                    <div class="flex items-start space-x-2">
+                        <div class="bg-blue-500 text-white rounded-lg px-3 py-2 max-w-xs">
+                            <p class="text-sm">Hi! I'm your assistant. Ask me anything about our store!</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 border-t border-gray-200 dark:border-gray-700">
+                    <div class="flex space-x-2">
+                        <input type="text" id="chat-input" placeholder="Type your message..." class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
+                        <button id="send-btn" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors duration-200">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const botToggle = document.getElementById('bot-toggle');
+                const chatWindow = document.getElementById('chat-window');
+                const chatInput = document.getElementById('chat-input');
+                const sendBtn = document.getElementById('send-btn');
+                const chatMessages = document.getElementById('chat-messages');
+
+                // Toggle chat window
+                botToggle.addEventListener('click', function() {
+                    chatWindow.classList.toggle('hidden');
+                });
+
+                // Send message
+                function sendMessage() {
+                    const message = chatInput.value.trim();
+                    if (message === '') return;
+
+                    // Add user message
+                    addMessage(message, 'user');
+                    chatInput.value = '';
+
+                    // Generate bot response
+                    setTimeout(() => {
+                        const response = getBotResponse(message);
+                        addMessage(response, 'bot');
+                    }, 1000);
+                }
+
+                sendBtn.addEventListener('click', sendMessage);
+                chatInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        sendMessage();
+                    }
+                });
+
+                function addMessage(text, sender) {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = `flex items-start space-x-2 ${sender === 'user' ? 'justify-end' : ''}`;
+
+                    const messageBubble = document.createElement('div');
+                    messageBubble.className = `rounded-lg px-3 py-2 max-w-xs text-sm ${
+                        sender === 'user'
+                            ? 'bg-blue-500 text-white'
+                            : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white'
+                    }`;
+                    messageBubble.innerHTML = `<p>${text}</p>`;
+
+                    messageDiv.appendChild(messageBubble);
+                    chatMessages.appendChild(messageDiv);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }
+
+                function getBotResponse(message) {
+                    const lowerMessage = message.toLowerCase();
+
+                    if (lowerMessage.includes('hello') || lowerMessage.includes('hi')) {
+                        return 'Hello! Welcome to RLQR Store. How can I assist you today?';
+                    } else if (lowerMessage.includes('product') || lowerMessage.includes('item')) {
+                        return 'We have a wide range of products available. You can browse our catalog or search for specific items. What are you looking for?';
+                    } else if (lowerMessage.includes('price') || lowerMessage.includes('cost')) {
+                        return 'Prices vary depending on the product. Please check individual product pages for current pricing and any ongoing promotions.';
+                    } else if (lowerMessage.includes('shipping') || lowerMessage.includes('delivery')) {
+                        return 'We offer fast and reliable shipping. Delivery times depend on your location. Standard shipping takes 3-5 business days.';
+                    } else if (lowerMessage.includes('return') || lowerMessage.includes('refund')) {
+                        return 'We have a 30-day return policy for most items. Please check our return policy page for more details.';
+                    } else if (lowerMessage.includes('contact') || lowerMessage.includes('support')) {
+                        return 'You can contact our support team via email at support@rlqrstore.com or call us at 1-800-RLQR-STORE.';
+                    } else {
+                        return 'I\'m here to help! Please ask me about our products, shipping, returns, or anything else related to our store.';
+                    }
+                }
+            });
+        </script>
     </body>
 </html>
