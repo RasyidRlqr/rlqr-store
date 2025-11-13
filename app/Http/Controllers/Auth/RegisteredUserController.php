@@ -29,26 +29,23 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        // 1. Validasi Input
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        // 2. Buat User dan Hash Password (Benar)
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password), // WAJIB: Hashing Bcrypt
-            'role' => 0, // Tambahkan default role (asumsi 0 untuk user biasa)
-        ]);
+        'name' => $request->name,
+        'email' => $request->email,
+        // UBAH: Gunakan Hash::make() untuk mengenkripsi
+        'password' => Hash::make($request->password), 
+    ]);
 
         event(new Registered($user));
 
-        // 3. Login User Baru
         Auth::login($user);
 
-        return redirect('/'); 
+        return redirect(route('dashboard', absolute: false));
     }
 }
