@@ -49,8 +49,6 @@ class RegisteredUserController extends Controller
         // 3. Login User Baru
         Auth::login($user);
 
-        // 4. Redirect Final: Menggunakan URL langsung jika route 'dashboard' bermasalah
-        // Kita ubah agar mengarahkan ke Homepage jika user biasa login
         return redirect('/'); 
     }
 }
