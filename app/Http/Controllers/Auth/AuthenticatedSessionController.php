@@ -24,33 +24,27 @@ class AuthenticatedSessionController extends Controller
      * Handle an incoming authentication request.
      */
     public function store(Request $request): RedirectResponse
-{
-    // 1. Validasi Input
-    $request->validate([
-        'email' => 'required|string|email',
-        'password' => 'required|string',
-    ]);
-
-    // 2. Lakukan Autentikasi Menggunakan Auth::attempt()
-    if (! Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
-        // Jika autentikasi gagal
-        throw ValidationException::withMessages([
-            'email' => trans('auth.failed'),
+    {
+        $request->validate([
+            'email' => 'required|string|email',
+            'password' => 'required|string',
         ]);
-    }
-    
-    // 3. Regenerate Session (Hanya jika autentikasi berhasil)
-    $request->session()->regenerate();
-    
-    // --- LOGIKA REDIRECT FINAL (Sesuai role) ---
-    if (Auth::user()->role === 1) {
-        // Admin diarahkan ke Panel Admin
-        return redirect()->intended('/admin'); 
-    }
 
-    // User biasa diarahkan ke Homepage
-    return redirect()->intended('/'); 
-}
+        if (! Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
+            throw ValidationException::withMessages([
+                'email' => trans('auth.failed'),
+            ]);
+        }
+
+        $request->session()->regenerate();
+
+        // Role-based redirect
+        if (Auth::user()->role === 1) {
+            return redirect()->intended('/admin');
+        }
+
+        return redirect()->intended(route('dashboard', absolute: false));
+    }
     /**
      * Destroy an authenticated session.
      */
