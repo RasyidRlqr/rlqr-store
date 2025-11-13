@@ -1,5 +1,5 @@
-{{-- resources/views/layouts/navigation_bs.blade.php (Perbaikan Final Navbar) --}}
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+{{-- resources/views/layouts/navigation_bs.blade.php (VERSI FINAL MODEREN) --}}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark bg-opacity-75 sticky-top shadow-sm"> 
     <div class="container-fluid">
         <a class="navbar-brand fw-bold text-info" href="{{ route('homepage') }}">TOPUP.ID 🎮</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -13,26 +13,20 @@
                 </li>
                 
                 @auth
-                    {{-- LINK DASHBOARD USER (Hanya Tampil Jika Bukan Admin dan Tidak di Admin Panel) --}}
-                    @if (Auth::user()->role === 0 && !request()->is('admin/*'))
+                    {{-- LINK NAVIGASI UNTUK SEMUA USER YANG LOGIN --}}
+                    
+                    @if (Auth::user()->role === 0)
+                        {{-- User Biasa --}}
                         <li class="nav-item">
-                            <a class="nav-link fw-bold" href="{{ route('dashboard') }}">
-                                Dashboard User
-                            </a>
+                            <a class="nav-link" href="{{ route('dashboard') }}">Dashboard User</a>
                         </li>
                     @endif
 
-                    {{-- LINK ADMIN (Hanya Tampil Jika Role = 1 dan Tidak di Admin Panel) --}}
-                    @if (Auth::user()->role === 1 && !request()->is('admin/*'))
+                    @if (Auth::user()->role === 1)
+                        {{-- Admin Saja --}}
                         <li class="nav-item">
-                            <a class="nav-link fw-bold text-warning" href="{{ route('admin.dashboard') }}">
-                                Panel Admin
-                            </a>
+                            <a class="nav-link fw-bold text-warning" href="{{ route('admin.dashboard') }}">Panel Admin</a>
                         </li>
-                    @endif
-
-                    {{-- LINK CEPAT ADMIN (Hanya Tampil Jika Role = 1 dan di Admin Panel) --}}
-                    @if (Auth::user()->role === 1 && request()->is('admin/*'))
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('games.index') }}">Kelola Game</a>
                         </li>
@@ -49,6 +43,7 @@
             {{-- User/Logout Dropdown (Pojok Kanan) --}}
             <ul class="navbar-nav ms-auto">
                 @auth
+                    {{-- DROP DOWN LOGIN --}}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle fw-bold text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             {{ Auth::user()->name }}
@@ -65,6 +60,7 @@
                         </ul>
                     </li>
                 @else
+                    {{-- LINK GUEST (BELUM LOGIN) --}}
                     <li class="nav-item">
                         <a class="btn btn-outline-info me-2" href="{{ route('login') }}">Login</a>
                     </li>
