@@ -30,8 +30,11 @@ Route::get('/topup/{game:slug}', [GameDetailController::class, 'show'])->name('t
 
 // Proses Order dan Konfirmasi Pembayaran
 Route::post('/order', [OrderController::class, 'store'])->name('order.store');
-Route::get('/order/{invoice_number}/confirm', [OrderController::class, 'confirmation'])->name('order.confirmation');
-
+Route::get('/order/{invoice_number}/status', function ($invoice_number) {
+    // Ambil order untuk memastikan data
+    $order = App\Models\Order::where('invoice_number', $invoice_number)->firstOrFail();
+    return view('order.confirmation', compact('order')); // Gunakan view yang sama
+})->name('order.status.view');
 
 // --- B. ROUTE TERPROTEKSI DASAR (User Biasa & Admin Profile) ---
 
