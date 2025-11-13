@@ -26,80 +26,88 @@
 
 <div class="container my-5">
     {{-- Search Bar --}}
-    <div class="row justify-content-center mb-5">
-        <div class="col-md-8">
-            <div class="input-group input-group-lg">
-                <span class="input-group-text bg-white border-end-0">
-                    <i class="fas fa-search text-muted"></i>
-                </span>
-                <input type="text" placeholder="Cari Game, misalnya Mobile Legends..." class="form-control border-start-0 shadow-sm">
-                <button class="btn btn-primary px-4" type="button">
-                    <i class="fas fa-search me-2"></i>Cari
-                </button>
-            </div>
+  <div class="row justify-content-center mb-5">
+    <div class="col-md-8">
+        <div class="input-group input-group-lg">
+            {{-- Ganti bg-white -> bg-body --}}
+            <span class="input-group-text bg-body border-end-0"> 
+                <i class="fas fa-search text-body-secondary"></i> 
+            </span>
+            {{-- Hapus class statis, Bootstrap akan menangani warna input --}}
+            <input type="text" placeholder="Cari Game, misalnya Mobile Legends..." class="form-control border-start-0 shadow-sm">
+            <button class="btn btn-primary px-4" type="button">
+                <i class="fas fa-search me-2"></i>Cari
+            </button>
         </div>
     </div>
+</div>
 
     {{-- Features --}}
-    <div class="row text-center mb-5">
-        <div class="col-md-4">
-            <div class="feature-card p-4 bg-light rounded shadow-sm">
-                <i class="fas fa-bolt text-warning fa-3x mb-3"></i>
-                <h5 class="fw-bold">Instan</h5>
-                <p class="text-muted">Top up langsung dikirim setelah pembayaran</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="feature-card p-4 bg-light rounded shadow-sm">
-                <i class="fas fa-shield-alt text-success fa-3x mb-3"></i>
-                <h5 class="fw-bold">Aman</h5>
-                <p class="text-muted">Transaksi terlindungi dengan enkripsi</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="feature-card p-4 bg-light rounded shadow-sm">
-                <i class="fas fa-headset text-primary fa-3x mb-3"></i>
-                <h5 class="fw-bold">24/7 Support</h5>
-                <p class="text-muted">Customer service siap membantu kapan saja</p>
-            </div>
+   <div class="row text-center mb-5">
+    {{-- Card 1 --}}
+    <div class="col-md-4">
+        {{-- Ganti bg-light -> bg-body / text-muted -> text-body-secondary --}}
+        <div class="feature-card p-4 bg-body rounded shadow-sm border"> 
+            <i class="fas fa-bolt text-warning fa-3x mb-3"></i>
+            <h5 class="fw-bold text-body">Instan</h5>
+            <p class="text-body-secondary">Top up langsung dikirim setelah pembayaran</p>
         </div>
     </div>
+    {{-- Ulangi untuk Card 2 & 3 --}}
+    <div class="col-md-4">
+        <div class="feature-card p-4 bg-body rounded shadow-sm border">
+             <i class="fas fa-shield-alt text-success fa-3x mb-3"></i>
+            <h5 class="fw-bold text-body">Aman</h5>
+            <p class="text-body-secondary">Transaksi terlindungi dengan enkripsi</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="feature-card p-4 bg-body rounded shadow-sm border">
+            <i class="fas fa-headset text-primary fa-3x mb-3"></i>
+            <h5 class="fw-bold text-body">24/7 Support</h5>
+            <p class="text-body-secondary">Customer service siap membantu kapan saja</p>
+        </div>
+    </div>
+</div>
 
     <h2 id="games" class="mb-4 text-center">
         <i class="fas fa-fire text-danger me-2"></i>Game Populer
     </h2>
 
     {{-- Daftar Game (Grid) --}}
-    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-4">
-        @forelse ($games as $game)
-            <div class="col">
-                <div class="game-card card h-100 shadow-sm border-0 text-decoration-none text-dark bg-white position-relative overflow-hidden">
-                    <a href="{{ route('topup.show', $game->slug) }}" class="text-decoration-none text-dark">
-                        {{-- Gambar Game Placeholder --}}
-                        <div class="card-img-wrapper position-relative">
-                            <img src="https://via.placeholder.com/300x200?text={{ urlencode($game->name) }}"
-                                 alt="{{ $game->name }}"
-                                 class="card-img-top">
-                            <div class="card-img-overlay d-flex align-items-center justify-content-center bg-dark bg-opacity-50 opacity-0 hover-overlay">
-                                <span class="text-white fw-bold">Top Up Sekarang</span>
-                            </div>
+   <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-4">
+    @forelse ($games as $game)
+        <div class="col">
+            {{-- PERBAIKAN: Ganti bg-white statis menjadi bg-body tema --}}
+            <div class="game-card card h-100 shadow-sm border-0 text-decoration-none text-body bg-body position-relative overflow-hidden">
+                <a href="{{ route('topup.show', $game->slug) }}" class="text-decoration-none text-body">
+                    {{-- Gambar Game Placeholder --}}
+                    <div class="card-img-wrapper position-relative">
+                        <img src="https://via.placeholder.com/300x200?text={{ urlencode($game->name) }}"
+                                alt="{{ $game->name }}"
+                                class="card-img-top">
+                        {{-- Overlay harus selalu terlihat (putih) di kedua mode --}}
+                        <div class="card-img-overlay d-flex align-items-center justify-content-center bg-dark bg-opacity-50 opacity-0 hover-overlay">
+                            <span class="text-white fw-bold">Top Up Sekarang</span>
                         </div>
+                    </div>
 
-                        <div class="card-body text-center p-3">
-                            <h6 class="card-title fw-bold mb-2 text-truncate">{{ $game->name }}</h6>
-                            <span class="badge bg-primary">Tersedia</span>
-                        </div>
-                    </a>
-                </div>
+                    <div class="card-body text-center p-3">
+                        {{-- Ganti class text-dark menjadi text-body --}}
+                        <h6 class="card-title fw-bold mb-2 text-body text-truncate">{{ $game->name }}</h6>
+                        {{-- Badge harus tetap terlihat baik di mode terang maupun gelap --}}
+                        <span class="badge bg-success-subtle text-success">Tersedia</span> 
+                    </div>
+                </a>
             </div>
-        @empty
-            <div class="col-12">
-                <div class="alert alert-info text-center border-0 shadow-sm">
-                    <i class="fas fa-info-circle me-2"></i>Belum ada game aktif yang tersedia saat ini.
-                </div>
+        </div>
+    @empty
+        <div class="col-12">
+            <div class="alert alert-info text-center border-0 shadow-sm bg-body">
+                <i class="fas fa-info-circle me-2"></i>Belum ada game aktif yang tersedia saat ini.
             </div>
-        @endforelse
-    </div>
+        </div>
+    @endforelse
 </div>
 
 {{-- Modern Floating Chatbot --}}
@@ -149,41 +157,12 @@
   <div class="container pt-4">
     <!-- Section: Social media -->
     <section class="mb-4">
-      <!-- Facebook -->
-      <a
-        data-mdb-ripple-init
-        class="btn btn-link btn-floating btn-lg text-body m-1"
-        href="#!"
-        role="button"
-        data-mdb-ripple-color="dark"
-        ><i class="fab fa-facebook-f"></i
-      ></a>
-
-      <!-- Twitter -->
-      <a
-        data-mdb-ripple-init
-        class="btn btn-link btn-floating btn-lg text-body m-1"
-        href="#!"
-        role="button"
-        data-mdb-ripple-color="dark"
-        ><i class="fab fa-twitter"></i
-      ></a>
-
-      <!-- Google -->
-      <a
-        data-mdb-ripple-init
-        class="btn btn-link btn-floating btn-lg text-body m-1"
-        href="#!"
-        role="button"
-        data-mdb-ripple-color="dark"
-        ><i class="fab fa-google"></i
-      ></a>
-
+     
       <!-- Instagram -->
       <a
         data-mdb-ripple-init
         class="btn btn-link btn-floating btn-lg text-body m-1"
-        href="#!"
+        href="https://www.instagram.com/rasyid_rlqr"
         role="button"
         data-mdb-ripple-color="dark"
         ><i class="fab fa-instagram"></i
@@ -193,7 +172,7 @@
       <a
         data-mdb-ripple-init
         class="btn btn-link btn-floating btn-lg text-body m-1"
-        href="#!"
+        href="https://www.linkedin.com/in/ikhwan-rasyid-b9727b396/"
         role="button"
         data-mdb-ripple-color="dark"
         ><i class="fab fa-linkedin"></i
@@ -202,7 +181,7 @@
       <a
         data-mdb-ripple-init
         class="btn btn-link btn-floating btn-lg text-body m-1"
-        href="#!"
+        href="https://github.com/RasyidRlqr"
         role="button"
         data-mdb-ripple-color="dark"
         ><i class="fab fa-github"></i
@@ -214,8 +193,8 @@
 
   <!-- Copyright -->
   <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.05);">
-    © 2020 Copyright:
-    <a class="text-body" href="https://mdbootstrap.com/">MDBootstrap.com</a>
+    © 2025 Copyright:
+    <a class="text-body" href="#">rlqr-store.anomalihitam.my.id</a>
   </div>
   <!-- Copyright -->
 </footer>

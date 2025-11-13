@@ -1,4 +1,4 @@
-{{-- resources/views/layouts/navigation_bs.blade.php (VERSI FINAL MODEREN) --}}
+{{-- resources/views/layouts/navigation_bs.blade.php (FINAL DENGAN DARK MODE) --}}
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark bg-opacity-75 sticky-top shadow-sm"> 
     <div class="container-fluid">
         <a class="navbar-brand fw-bold text-info" href="{{ route('homepage') }}">TOPUP.ID 🎮</a>
@@ -39,9 +39,22 @@
                     @endif
                 @endauth
             </ul>
+          
             
             {{-- User/Logout Dropdown (Pojok Kanan) --}}
-            <ul class="navbar-nav ms-auto">
+            {{-- Tambahkan class d-flex align-items-center pada ul untuk tata letak yang rapi --}}
+            <ul class="navbar-nav ms-auto d-flex align-items-center">
+                
+                {{-- ☀️ DARK MODE TOGGLE (BARU) 🌙 --}}
+                {{-- Toggle diposisikan di sebelah kiri tombol Login/Register/Profile --}}
+                <li class="nav-item me-3"> 
+                    <button class="btn btn-sm btn-outline-info theme-toggle" aria-label="Toggle dark mode">
+                        {{-- Ikon awal, akan diganti JS. Default: Bulan (Dark) --}}
+                        <span class="theme-icon">🌙</span> 
+                    </button>
+                </li>
+                {{-- END TOGGLE --}}
+
                 @auth
                     {{-- DROP DOWN LOGIN --}}
                     <li class="nav-item dropdown">
@@ -72,3 +85,51 @@
         </div>
     </div>
 </nav>
+
+{{-- SCRIPT JAVASCRIPT UNTUK FUNGSI DARK MODE --}}
+{{-- PENTING: Script ini harus diletakkan setelah tag penutup </nav> --}}
+<script>
+    (() => {
+      // Dapatkan tema yang tersimpan di Local Storage (jika ada)
+      const storedTheme = localStorage.getItem('theme');
+      
+      // Fungsi untuk menentukan tema yang disukai
+      const getPreferredTheme = () => {
+        if (storedTheme) return storedTheme;
+        // Cek preferensi sistem operasi user
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+
+      // Fungsi untuk mengatur tema dan menyimpan preferensi
+      const setTheme = (theme) => {
+        // Mengubah atribut data-bs-theme di tag <html>
+        document.documentElement.setAttribute('data-bs-theme', theme);
+        
+        // Mengubah ikon sesuai tema
+        const icon = document.querySelector('.theme-icon');
+        if (icon) {
+            // Jika tema light, tampilkan Bulan (🌙)
+            // Jika tema dark, tampilkan Matahari (☀️)
+            icon.textContent = theme === 'light' ? '🌙' : '☀️';
+        }
+      }
+
+      // Terapkan tema saat halaman dimuat
+      setTheme(getPreferredTheme());
+
+      // Tambahkan event listener ke tombol toggle setelah DOM selesai dimuat
+      document.addEventListener('DOMContentLoaded', () => {
+        const toggleButton = document.querySelector('.theme-toggle');
+        if (toggleButton) {
+            toggleButton.addEventListener('click', () => {
+                const currentTheme = document.documentElement.getAttribute('data-bs-theme');
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                // Simpan preferensi tema baru
+                localStorage.setItem('theme', newTheme);
+                // Terapkan tema baru
+                setTheme(newTheme);
+            });
+        }
+      });
+    })()
+</script>
