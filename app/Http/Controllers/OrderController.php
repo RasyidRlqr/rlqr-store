@@ -57,7 +57,7 @@ public function updateStatusFromBot(Request $request)
         // Atur paid_at jika status diubah menjadi 'paid' atau 'completed'
         if (in_array($newStatus, ['paid', 'completed']) && $order->paid_at === null) {
             $order->paid_at = now();
-        }
+        }   
 
         $order->save();
 
