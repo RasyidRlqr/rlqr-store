@@ -1,5 +1,5 @@
-{{-- resources/views/layouts/navigation_bs.blade.php (Perbaikan Final Navbar) --}}
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+{{-- resources/views/layouts/navigation_bs.blade.php (FINAL DENGAN DARK MODE) --}}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark bg-opacity-75 sticky-top shadow-sm"> 
     <div class="container-fluid">
         <a class="navbar-brand fw-bold text-info" href="{{ route('homepage') }}">TOPUP.ID 🎮</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -13,26 +13,20 @@
                 </li>
                 
                 @auth
-                    {{-- LINK DASHBOARD USER (Hanya Tampil Jika Bukan Admin dan Tidak di Admin Panel) --}}
-                    @if (Auth::user()->role === 0 && !request()->is('admin/*'))
+                    {{-- LINK NAVIGASI UNTUK SEMUA USER YANG LOGIN --}}
+                    
+                    @if (Auth::user()->role === 0)
+                        {{-- User Biasa --}}
                         <li class="nav-item">
-                            <a class="nav-link fw-bold" href="{{ route('dashboard') }}">
-                                Dashboard User
-                            </a>
+                            <a class="nav-link" href="{{ route('dashboard') }}">Dashboard User</a>
                         </li>
                     @endif
 
-                    {{-- LINK ADMIN (Hanya Tampil Jika Role = 1 dan Tidak di Admin Panel) --}}
-                    @if (Auth::user()->role === 1 && !request()->is('admin/*'))
+                    @if (Auth::user()->role === 1)
+                        {{-- Admin Saja --}}
                         <li class="nav-item">
-                            <a class="nav-link fw-bold text-warning" href="{{ route('admin.dashboard') }}">
-                                Panel Admin
-                            </a>
+                            <a class="nav-link fw-bold text-warning" href="{{ route('admin.dashboard') }}">Panel Admin</a>
                         </li>
-                    @endif
-
-                    {{-- LINK CEPAT ADMIN (Hanya Tampil Jika Role = 1 dan di Admin Panel) --}}
-                    @if (Auth::user()->role === 1 && request()->is('admin/*'))
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('games.index') }}">Kelola Game</a>
                         </li>
@@ -45,10 +39,24 @@
                     @endif
                 @endauth
             </ul>
+          
             
             {{-- User/Logout Dropdown (Pojok Kanan) --}}
-            <ul class="navbar-nav ms-auto">
+            {{-- Tambahkan class d-flex align-items-center pada ul untuk tata letak yang rapi --}}
+            <ul class="navbar-nav ms-auto d-flex align-items-center">
+                
+                {{-- ☀️ DARK MODE TOGGLE (BARU) 🌙 --}}
+                {{-- Toggle diposisikan di sebelah kiri tombol Login/Register/Profile --}}
+                <li class="nav-item me-3"> 
+                    <button class="btn btn-sm btn-outline-info theme-toggle" aria-label="Toggle dark mode">
+                        {{-- Ikon awal, akan diganti JS. Default: Bulan (Dark) --}}
+                        <span class="theme-icon">🌙</span> 
+                    </button>
+                </li>
+                {{-- END TOGGLE --}}
+
                 @auth
+                    {{-- DROP DOWN LOGIN --}}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle fw-bold text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             {{ Auth::user()->name }}
@@ -65,6 +73,7 @@
                         </ul>
                     </li>
                 @else
+                    {{-- LINK GUEST (BELUM LOGIN) --}}
                     <li class="nav-item">
                         <a class="btn btn-outline-info me-2" href="{{ route('login') }}">Login</a>
                     </li>
@@ -76,3 +85,51 @@
         </div>
     </div>
 </nav>
+
+{{-- SCRIPT JAVASCRIPT UNTUK FUNGSI DARK MODE --}}
+{{-- PENTING: Script ini harus diletakkan setelah tag penutup </nav> --}}
+<script>
+    (() => {
+      // Dapatkan tema yang tersimpan di Local Storage (jika ada)
+      const storedTheme = localStorage.getItem('theme');
+      
+      // Fungsi untuk menentukan tema yang disukai
+      const getPreferredTheme = () => {
+        if (storedTheme) return storedTheme;
+        // Cek preferensi sistem operasi user
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+
+      // Fungsi untuk mengatur tema dan menyimpan preferensi
+      const setTheme = (theme) => {
+        // Mengubah atribut data-bs-theme di tag <html>
+        document.documentElement.setAttribute('data-bs-theme', theme);
+        
+        // Mengubah ikon sesuai tema
+        const icon = document.querySelector('.theme-icon');
+        if (icon) {
+            // Jika tema light, tampilkan Bulan (🌙)
+            // Jika tema dark, tampilkan Matahari (☀️)
+            icon.textContent = theme === 'light' ? '🌙' : '☀️';
+        }
+      }
+
+      // Terapkan tema saat halaman dimuat
+      setTheme(getPreferredTheme());
+
+      // Tambahkan event listener ke tombol toggle setelah DOM selesai dimuat
+      document.addEventListener('DOMContentLoaded', () => {
+        const toggleButton = document.querySelector('.theme-toggle');
+        if (toggleButton) {
+            toggleButton.addEventListener('click', () => {
+                const currentTheme = document.documentElement.getAttribute('data-bs-theme');
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                // Simpan preferensi tema baru
+                localStorage.setItem('theme', newTheme);
+                // Terapkan tema baru
+                setTheme(newTheme);
+            });
+        }
+      });
+    })()
+</script>

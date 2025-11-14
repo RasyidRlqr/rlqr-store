@@ -57,7 +57,7 @@ public function updateStatusFromBot(Request $request)
         // Atur paid_at jika status diubah menjadi 'paid' atau 'completed'
         if (in_array($newStatus, ['paid', 'completed']) && $order->paid_at === null) {
             $order->paid_at = now();
-        }
+        }   
 
         $order->save();
 
@@ -115,7 +115,7 @@ public function updateStatusFromBot(Request $request)
         
         // Buat pesan yang ringkas dan jelas
         $discordMessage = [
-            'content' => "@here 🚨 **ORDER BARU MASUK (INV: {$order->invoice_number})** 🚨",
+            'content' => "Admint 🚨 **ORDER BARU MASUK NIH (INV: {$order->invoice_number})** 🚨",
             'embeds' => [
                 [
                     'title' => "Top Up Baru: {$order->product->game->name}",
@@ -145,7 +145,7 @@ public function updateStatusFromBot(Request $request)
         }
         
         // 4. Redirect ke Halaman Konfirmasi Pembayaran
-        return redirect()->route('order.confirmation', $order->invoice_number);
+        return redirect()->route('order.status.view', $order->invoice_number);
     }
     
     // Method confirmation() juga harus dipindahkan ke sini

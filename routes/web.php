@@ -1,27 +1,22 @@
 <?php
 
-// routes/web.php (KODE FINAL)
+// routes/web.php (KODE FINAL DAN PERBAIKAN)
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\GameController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\GameDetailController;
-use App\Http\Controllers\OrderController; // <-- BARIS INI HARUS AKTIF!
+use App\Http\Controllers\OrderController; 
 use App\Http\Controllers\Admin\OrderController as AdminOrderController; 
 use App\Models\Game;
+
 // --- A. ROUTE PUBLIK (FRONTEND USER) ---
 
 // Homepage / Landing Page
 Route::get('/', function () {
-    // Mock data for demonstration - replace with database query when MySQL is available
-    $games = collect([
-        (object)['id' => 1, 'name' => 'Mobile Legends', 'slug' => 'mobile-legends', 'is_active' => true],
-        (object)['id' => 2, 'name' => 'Free Fire', 'slug' => 'free-fire', 'is_active' => true],
-        (object)['id' => 3, 'name' => 'PUBG Mobile', 'slug' => 'pubg-mobile', 'is_active' => true],
-        (object)['id' => 4, 'name' => 'Genshin Impact', 'slug' => 'genshin-impact', 'is_active' => true],
-        (object)['id' => 5, 'name' => 'Valorant', 'slug' => 'valorant', 'is_active' => true],
-    ]);
+    // (Mock data dihilangkan untuk finalisasi - gunakan query DB)
+    $games = Game::all(); 
     return view('index', compact('games'));
 })->name('homepage');
 
@@ -30,42 +25,39 @@ Route::get('/topup/{game:slug}', [GameDetailController::class, 'show'])->name('t
 
 // Proses Order dan Konfirmasi Pembayaran
 Route::post('/order', [OrderController::class, 'store'])->name('order.store');
-Route::get('/order/{invoice_number}/confirm', [OrderController::class, 'confirmation'])->name('order.confirmation');
+
+// ORDER STATUS VIEW (Fix: Menggunakan Controller method yang benar)
+Route::get('/order/{invoice_number}/status', [OrderController::class, 'confirmation'])->name('order.status.view');
 
 
 // --- B. ROUTE TERPROTEKSI DASAR (User Biasa & Admin Profile) ---
 
 Route::middleware('auth')->group(function () {
+    
+    // 1. Dashboard Logic
     Route::get('/dashboard', function () {
-        // Jika user adalah Admin, paksa redirect ke Panel Admin
         if (Auth::user()->role === 1) {
             return redirect()->route('admin.dashboard');
         }
-        // Jika user adalah user biasa (role 0), tampilkan dashboard user
         return view('dashboard'); 
-    })->name('dashboard');Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::get('/orders/history', [OrderController::class, 'userHistory'])->name('user.orders.history');
+    })->name('dashboard');
+    
+    // 2. Profile Management
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    
+    // 3. Order History
+    Route::get('/orders/history', [OrderController::class, 'userHistory'])->name('user.orders.history');
 });
 
 
 // --- C. ROUTE ADMIN (Khusus role=1) ---
 
 Route::prefix('admin')->middleware(['auth', 'is_admin'])->group(function () {
-    
-    // Dashboard Admin (Landing page untuk /admin)
-    Route::get('/', function () {
-        return view('admin.dashboard'); 
-    })->name('admin.dashboard'); 
-    
-    // 1. Management Game
+    Route::get('/', function () { return view('admin.dashboard'); })->name('admin.dashboard'); 
     Route::resource('games', GameController::class);
-    
-    // 2. Management Nominal Top Up
-    Route::resource('products', ProductController::class);
-    
-    // 3. Management Pesanan (Hanya Index, Show, dan Update Status)
+Route::resource('products', ProductController::class);// Menggunakan alias Controller
     Route::resource('orders', AdminOrderController::class)->only(['index', 'show', 'update']); 
 });
 
