@@ -117,7 +117,6 @@
     </form>
 </div>
 
-{{-- SCRIPT FUNGSIONALITAS (di luar @section('content') jika menggunakan @push('scripts')) --}}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         
