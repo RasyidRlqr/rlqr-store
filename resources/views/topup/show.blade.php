@@ -75,7 +75,6 @@
                     </div>
                 </div>
 
-                {{-- resources/views/topup/show.blade.php (Bagian Pilihan Pembayaran) --}}
                 <div class="card shadow mb-4">
                     <div class="card-header bg-primary text-white">
                         <h5 class="mb-0">3. Pilih Metode Pembayaran</h5>
