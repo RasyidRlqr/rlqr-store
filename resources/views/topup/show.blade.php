@@ -128,7 +128,6 @@
             element.style.backgroundColor = '#e7f1ff'; 
         };
 
-        // 1. Logika Pilih Nominal
         document.querySelectorAll('.product-radio').forEach(radio => {
             radio.addEventListener('change', function() {
                 document.getElementById('selected_product_id').value = this.value;
@@ -136,7 +135,6 @@
             });
         });
 
-        // 2. Logika Pilih Metode Pembayaran
         document.querySelectorAll('.payment-radio').forEach(radio => {
             radio.addEventListener('change', function() {
                 document.getElementById('selected_payment_method').value = this.value;
