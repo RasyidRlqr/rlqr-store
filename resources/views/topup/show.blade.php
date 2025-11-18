@@ -119,14 +119,13 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         
-        // CSS untuk Kartu yang dipilih
         const setActiveState = (element) => {
             document.querySelectorAll('.card-radio-option').forEach(label => {
                 label.style.borderColor = '#ccc';
                 label.style.backgroundColor = '#fff';
             });
-            element.style.borderColor = '#0d6efd'; // Bootstrap Primary Blue
-            element.style.backgroundColor = '#e7f1ff'; // Light Blue
+            element.style.borderColor = '#0d6efd'; 
+            element.style.backgroundColor = '#e7f1ff'; 
         };
 
         // 1. Logika Pilih Nominal
